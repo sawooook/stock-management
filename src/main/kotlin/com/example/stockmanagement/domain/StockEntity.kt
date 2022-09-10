@@ -4,6 +4,7 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.Version
 
 @Entity
 class StockEntity(
@@ -13,8 +14,12 @@ class StockEntity(
 
     var productId: Long,
 
-    var quantity: Long
+    var quantity: Long,
+
 ) {
+    @Version
+    var version: Long = 0
+
     fun decrease(quantity: Long) {
         if (this.quantity - quantity < 0) {
             throw java.lang.IllegalArgumentException("수량을 뺄 수 없습니다")

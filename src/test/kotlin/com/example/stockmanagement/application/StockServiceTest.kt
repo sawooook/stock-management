@@ -16,7 +16,7 @@ import java.util.concurrent.Executors
 class StockServiceTest {
 
     @Autowired
-    lateinit var stockService: StockService
+    lateinit var strictStockService: StrictStockService
 
     @Autowired
     lateinit var stockRepository: StockRepository
@@ -36,7 +36,7 @@ class StockServiceTest {
         for (i in 0..threadCount) {
             threadPool.submit {
                 runCatching {
-                    stockService.decrease(1L, 1L)
+                    strictStockService.decrease(1L, 1L)
                 }.also {
                     countDownLatch.countDown()
                 }
