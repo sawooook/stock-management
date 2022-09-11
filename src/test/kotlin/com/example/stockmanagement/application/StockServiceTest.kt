@@ -23,12 +23,12 @@ class StockServiceTest {
 
     @BeforeEach
     fun makeStock() {
-        stockRepository.save (StockEntity(1L, 100, 100))
+        stockRepository.save (StockEntity(1L, 100, 1000))
     }
 
     @Test
     fun `동시에_100개의_요청`() {
-        val threadCount = 100
+        val threadCount = 1000
         val threadPool = Executors.newFixedThreadPool(32)
         val countDownLatch = CountDownLatch(threadCount)
 

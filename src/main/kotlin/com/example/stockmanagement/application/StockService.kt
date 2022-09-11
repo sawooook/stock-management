@@ -1,9 +1,11 @@
 package com.example.stockmanagement.application
 
 import com.example.stockmanagement.infrastructure.StockRepository
+import org.hibernate.annotations.Synchronize
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Isolation
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 
 @Service
@@ -18,11 +20,13 @@ class StockService(
      * flush전에 요청이 들어와 select를 하면 update 전이기때문에 재고가 안맞음
      * */
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
-    @Synchronized
+    @Transactional
     fun decrease(id: Long, quantity: Long) {
-        val stock = stockRepository.findByIdOrNull(id) ?: throw IllegalArgumentException("제고가 존재하지 않습니다")
+        val stock = stockRepository.findByIdOrNull(id) ?: throw IllegalArgumentException("재고가 존재하지 않습니다")
         stock.decrease(quantity)
+
+        println("=============== 재고상태 : ${stock.quantity}, ${stock.id}")
+
         stockRepository.saveAndFlush(stock)
     }
 

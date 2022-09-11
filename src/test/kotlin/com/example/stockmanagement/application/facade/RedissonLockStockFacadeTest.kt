@@ -1,10 +1,8 @@
-package com.example.stockmanagement
+package com.example.stockmanagement.application.facade
 
-import com.example.stockmanagement.application.StrictStockService
-import com.example.stockmanagement.application.facade.OptimisticStockFacade
 import com.example.stockmanagement.domain.StockEntity
 import com.example.stockmanagement.infrastructure.StockRepository
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,17 +12,15 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 
 @SpringBootTest
-class StockManagementApplicationTests {
-
+class RedissonLockStockFacadeTest {
     @Autowired
-    lateinit var optimisticStockFacade: OptimisticStockFacade
+    lateinit var redissonLockStockFacade: RedissonLockStockFacade
 
     @Autowired
     lateinit var stockRepository: StockRepository
 
     @BeforeEach
     fun makeStock() {
-
         stockRepository.save(
             StockEntity(1L, 100, 1000)
         )
@@ -40,7 +36,7 @@ class StockManagementApplicationTests {
         for (i in 0..threadCount) {
             threadPool.submit {
                 runCatching {
-                    optimisticStockFacade.decrease(1L, 1L)
+                    redissonLockStockFacade.desc(1L, 1L)
                 }.also {
                     countDownLatch.countDown()
                 }
@@ -50,7 +46,7 @@ class StockManagementApplicationTests {
         countDownLatch.await()
 
         val stock = stockRepository.findByIdOrNull(1L) ?: throw IllegalArgumentException()
-        Assertions.assertEquals(0L, stock.quantity)
+        assertEquals(0L, stock.quantity)
     }
 
 }

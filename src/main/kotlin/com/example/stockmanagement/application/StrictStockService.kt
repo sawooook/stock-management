@@ -9,7 +9,7 @@ class StrictStockService(
     private val stockRepository: StockRepository
 ) {
 
-//    @Transactional
+    @Transactional
     fun decrease(id: Long, quantity: Long) {
         val stock = stockRepository.findByIdWithPessimisticLock(id)
         stock.decrease(quantity)

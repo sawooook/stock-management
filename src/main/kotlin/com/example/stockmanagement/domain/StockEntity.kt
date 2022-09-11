@@ -17,9 +17,6 @@ class StockEntity(
     var quantity: Long,
 
 ) {
-    @Version
-    var version: Long = 0
-
     fun decrease(quantity: Long) {
         if (this.quantity - quantity < 0) {
             throw java.lang.IllegalArgumentException("수량을 뺄 수 없습니다")
